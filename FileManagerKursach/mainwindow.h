@@ -24,8 +24,15 @@ private slots:
     void on_filetableItem_Clicked(QTableWidgetItem* item);
      void on_openButton_clicked();
 
+
+
+     void on_lefttoolButton_pressed();
+
+     void on_righttoolButton_pressed();
+
 private:
     Ui::MainWindow *ui;
     Controller controller;
+    void showlist();
 };
 #endif // MAINWINDOW_H

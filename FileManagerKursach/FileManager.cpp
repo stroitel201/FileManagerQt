@@ -167,7 +167,6 @@ void FileManager::GetFile()
 
 		int flag = result;
 
-		/*if (result == -1) {std::cout << "\nТакой директории нет\t"; }*/
 		while (flag != -1){
 			if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 

@@ -35,9 +35,18 @@ MainWindow::MainWindow(QWidget *parent)
                 "padding:4px;"
             "}");}
     ui->filetableWidget->verticalHeader()->setVisible(false);
+
+    QPixmap pixmap(":/icons/leftSmallArrowicon.png");
+    QIcon ButtonIcon(pixmap);
+    ui->lefttoolButton->setIcon(ButtonIcon);
+    ui->lefttoolButton->setIconSize(QSize(pixmap.rect().size()));
+
+    QPixmap pixmapR(":/icons/rightSmallArrowicon.png");
+    QIcon ButtonIconR(pixmapR);
+    ui->righttoolButton->setIcon(ButtonIconR);
+    ui->righttoolButton->setIconSize(QSize(pixmapR.rect().size()));
+
 }
-
-
 
 MainWindow::~MainWindow()
 {
@@ -64,42 +73,8 @@ void MainWindow::ondrivelistItemClicked(QListWidgetItem* item)
     if(res==1) QMessageBox::critical(this,"Ошибка","Устройство не готово");
     else
     {
-        controller.leftshowlist=controller.LeftManager.GetListOfFiles();
-        ui->filetableWidget->clearContents();
-        auto it=controller.leftshowlist.begin();
-        ui->filetableWidget->setRowCount(controller.leftshowlist.size());
-
-        for (int i=0;it!=controller.leftshowlist.end();++it,++i)
-        {
-            QTableWidgetItem *icon_item = new QTableWidgetItem;
-            icon_item->setTextAlignment(Qt::AlignCenter);
-            QPixmap p;
-            if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon foldericon = QIcon(p);
-            if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon fileicon = QIcon(p);
-            ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(it->GetName())));
-            if(it->IsSubdir())
-            {
-                icon_item->setIcon(foldericon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* folder =new QTableWidgetItem("Folder");
-                 folder->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,folder);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(""));
-            }
-            else
-            {
-                icon_item->setIcon(fileicon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* exp=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
-                 exp->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,exp);
-                QTableWidgetItem* size=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
-                exp->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(QString::number(it->GetSize())+" Bytes"));
-            }
-        }
+         controller.changeleftAdress();
+        showlist();
     }
 }
 
@@ -111,40 +86,8 @@ void MainWindow::on_leftGoToButton_clicked()
     if (res==1) QMessageBox::critical(this,"Ошибка","Такой директории не существует");
     else
     {
-        controller.leftshowlist=controller.LeftManager.GetListOfFiles();
-        ui->filetableWidget->clearContents();
-        auto it=controller.leftshowlist.begin();
-        ui->filetableWidget->setRowCount(controller.leftshowlist.size());
-
-        for (int i=0;it!=controller.leftshowlist.end();++it,++i)
-        {
-            QTableWidgetItem *icon_item = new QTableWidgetItem;
-            icon_item->setTextAlignment(Qt::AlignCenter);
-            QPixmap p;
-            if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon foldericon = QIcon(p);
-            if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon fileicon = QIcon(p);
-            ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(it->GetName())));
-            if(it->IsSubdir())
-            {
-                icon_item->setIcon(foldericon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* folder =new QTableWidgetItem("Folder");
-                 folder->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,folder);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(""));
-            }
-            else
-            {
-                icon_item->setIcon(fileicon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* exp=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
-                 exp->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,exp);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(QString::number(it->GetSize())+" Bytes"));
-            }
-        }
+         controller.changeleftAdress();
+       showlist();
     }
 }
 
@@ -154,15 +97,36 @@ void MainWindow::on_showHidcheckBox_stateChanged(int arg1)
         controller.LeftManager.SetHidON();
     else controller.LeftManager.SetHidOFF();
     controller.LeftManager.GetFileFolders();
+
+    showlist();
+}
+
+void MainWindow::on_openButton_clicked()
+{
+    if(controller.leftchosenfile.IsSubdir())
+    {
+        controller.LeftManager.setPath(controller.leftchosenfile.GetPath());
+        controller.LeftManager.GetFileFolders();
+        controller.changeleftAdress();
+        showlist();
+
+    }
+
+    else controller.LeftManager.OpenFile(controller.leftchosenfile);
+}
+
+
+void MainWindow::showlist()
+{
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
     ui->filetableWidget->clearContents();
     auto it=controller.leftshowlist.begin();
     ui->filetableWidget->setRowCount(controller.leftshowlist.size());
-
     for (int i=0;it!=controller.leftshowlist.end();++it,++i)
     {
         QTableWidgetItem *icon_item = new QTableWidgetItem;
         icon_item->setTextAlignment(Qt::AlignCenter);
+        icon_item->setFlags(Qt::NoItemFlags);
         QPixmap p;
         if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
         QIcon foldericon = QIcon(p);
@@ -175,8 +139,11 @@ void MainWindow::on_showHidcheckBox_stateChanged(int arg1)
              ui->filetableWidget->setItem(i,0,icon_item);
              QTableWidgetItem* folder =new QTableWidgetItem("Folder");
              folder->setTextAlignment(Qt::AlignCenter);
+             folder->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,2,folder);
-            ui->filetableWidget->setItem(i,3,new QTableWidgetItem(""));
+            QTableWidgetItem* empty = new QTableWidgetItem("");
+            empty->setFlags(Qt::NoItemFlags);
+            ui->filetableWidget->setItem(i,3,empty);
         }
         else
         {
@@ -184,53 +151,33 @@ void MainWindow::on_showHidcheckBox_stateChanged(int arg1)
              ui->filetableWidget->setItem(i,0,icon_item);
              QTableWidgetItem* exp=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
              exp->setTextAlignment(Qt::AlignCenter);
+             exp->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,2,exp);
-            ui->filetableWidget->setItem(i,3,new QTableWidgetItem(QString::number(it->GetSize())+" Bytes"));
+             QTableWidgetItem* size =new QTableWidgetItem(QString::number(it->GetSize())+" Bytes");
+             size->setFlags(Qt::NoItemFlags);
+            ui->filetableWidget->setItem(i,3,size);
         }
     }
 }
 
-void MainWindow::on_openButton_clicked()
+
+
+void MainWindow::on_lefttoolButton_pressed()
 {
-    if(controller.leftchosenfile.IsSubdir())
-    {
-        controller.LeftManager.setPath(controller.leftchosenfile.GetPath());
-        controller.LeftManager.GetFileFolders();
-        controller.leftshowlist=controller.LeftManager.GetListOfFiles();
-        ui->filetableWidget->clearContents();
-        auto it=controller.leftshowlist.begin();
-        ui->filetableWidget->setRowCount(controller.leftshowlist.size());
-        for (int i=0;it!=controller.leftshowlist.end();++it,++i)
-        {
-            QTableWidgetItem *icon_item = new QTableWidgetItem;
-            icon_item->setTextAlignment(Qt::AlignCenter);
-            QPixmap p;
-            if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon foldericon = QIcon(p);
-            if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
-            QIcon fileicon = QIcon(p);
-            ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(it->GetName())));
-            if(it->IsSubdir())
-            {
-                icon_item->setIcon(foldericon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* folder =new QTableWidgetItem("Folder");
-                 folder->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,folder);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(""));
-            }
-            else
-            {
-                icon_item->setIcon(fileicon);
-                 ui->filetableWidget->setItem(i,0,icon_item);
-                 QTableWidgetItem* exp=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
-                 exp->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,2,exp);
-                QTableWidgetItem* size=new QTableWidgetItem(QString::fromStdString(it->GetExp()));
-                exp->setTextAlignment(Qt::AlignCenter);
-                ui->filetableWidget->setItem(i,3,new QTableWidgetItem(QString::number(it->GetSize())+" Bytes"));
-            }
-        }
-   }
-    else controller.LeftManager.OpenFile(controller.leftchosenfile);
+    if(controller.UndoAdress.size()==1)
+        return;
+    controller.leftUndo();
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+    showlist();
+}
+
+void MainWindow::on_righttoolButton_pressed()
+{
+    if(controller.RedoAdress.size()==0)
+        return;
+    controller.leftRedo();
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+    showlist();
 }

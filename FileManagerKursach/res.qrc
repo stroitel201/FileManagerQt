@@ -2,5 +2,9 @@
     <qresource prefix="/icons">
         <file>fileicon.png</file>
         <file>foldericon.png</file>
+        <file>leftArrowicon.png</file>
+        <file>rightArrowicon.png</file>
+        <file>rightSmallArrowicon.png</file>
+        <file>leftSmallArrowicon.png</file>
     </qresource>
 </RCC>
