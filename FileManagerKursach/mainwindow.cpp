@@ -3,6 +3,7 @@
 #include "QLineEdit"
 #include <QMessageBox>
 #include <QHeaderView>
+#include <QAbstractItemView>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -13,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->drivelistWidget->addItem(QString::fromStdString(*it));
     connect(ui->drivelistWidget,SIGNAL(itemPressed(QListWidgetItem*)),this,SLOT(ondrivelistItemClicked(QListWidgetItem*)));
     connect(ui->filetableWidget,&QTableWidget::itemClicked,this,&MainWindow::on_filetableItem_Clicked);
+    ui->filetableWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
     QStringList tableheader;
     ui->filetableWidget->setColumnCount(5);
@@ -91,6 +93,7 @@ void MainWindow::ondrivelistItemClicked(QListWidgetItem* item)
 
 void MainWindow::on_leftGoToButton_clicked()
 {
+    ui->filetableWidget->clearSelection();
     if(ui->leftlineEdit->text()=="")return;
     QByteArray ba=ui->leftlineEdit->text().toLocal8Bit();
     int res = controller.LeftManager.CommandCD(ba.data());
@@ -237,17 +240,43 @@ void MainWindow::on_righttoolButton_pressed()
 
 void MainWindow::on_deletepushButton_clicked()
 {
-    QMessageBox::StandardButton reply=QMessageBox::question(this,"Удалить","Вы действительно хотите удалить файл?",
+    QMessageBox::StandardButton reply=QMessageBox::question(this,"Удалить","Вы действительно хотите удалить файлы?",
                                                             QMessageBox::Yes|QMessageBox::No);
     if(reply==QMessageBox::No)
         return;
-    int res=controller.LeftManager.CommandDEL(controller.leftchosenfile);
-    if(res==1)
+
+    auto list=ui->filetableWidget->selectedItems();
+    auto it=list.begin();
+    for(;it!=list.end();++it)
     {
-        QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
-        return;
+        QTableWidgetItem* item=*it;
+         auto its=controller.leftshowlist.begin();
+         for(;its!=controller.leftshowlist.end();++its)
+         {
+             string tmp=item->text().toStdString();
+             if(tmp==its->GetName())
+                 break;
+         }
+         controller.leftchosenfile=*its;
+        int res=controller.LeftManager.CommandDEL(controller.leftchosenfile);
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+            return;
+        }
     }
     controller.LeftManager.GetFileFolders();
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
     showlist();
+}
+
+void MainWindow::on_filetableWidget_clicked(const QModelIndex &index)
+{
+    auto list=ui->filetableWidget->selectedItems();
+    if(list.size()==1)
+    {
+        on_filetableItem_Clicked(list.last());
+        return;
+    }
+    ui->filetableWidget->clearSelection();
 }

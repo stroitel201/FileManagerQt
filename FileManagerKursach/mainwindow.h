@@ -32,6 +32,8 @@ private slots:
 
      void on_deletepushButton_clicked();
 
+     void on_filetableWidget_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     Controller controller;
