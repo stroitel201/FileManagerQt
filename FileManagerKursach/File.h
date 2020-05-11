@@ -32,7 +32,8 @@ public:
     }
 	string GetName();
 	int GetSize();
-	tm* GetTimeCreate();
+    tm* GetTimeCreate();
+    tm* GetTimeWrite();
 	bool IsHidden();
 	bool IsArch();
 	bool IsSys();

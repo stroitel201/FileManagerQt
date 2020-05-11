@@ -41,11 +41,10 @@ private:
 	char ToPath[MAX_PATH];						
 	_finddata_t fileinfo;
 	char pathfind[MAX_PATH];
-
+    bool showHidden = false;
 	vector<string> drives;
-	bool showHidden = false;
-	
 	vector<File> filelist;	
+
 
     bool SetHiddenAttr(const char*);
     bool SetRdonlyAttr(const char*);

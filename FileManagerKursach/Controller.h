@@ -20,7 +20,12 @@ public:
     void leftRedo();
     void leftUndo();
 
+    void rightRedo();
+    void rightUndo();
+
     void changeleftAdress();
+
+    void changerightAdress();
 
     vector<string>leftdrives;
     vector<string>rightdrives;

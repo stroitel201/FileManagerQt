@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->filetableWidget,&QTableWidget::itemClicked,this,&MainWindow::on_filetableItem_Clicked);
 
     QStringList tableheader;
-    ui->filetableWidget->setColumnCount(4);
-    tableheader<<""<<"Name"<<"Expansion"<<"Size";
+    ui->filetableWidget->setColumnCount(5);
+    tableheader<<""<<"Name"<<"Expansion"<<"Size"<<"Last time write";
     ui->filetableWidget->setShowGrid(false);
     ui->filetableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //ui->filetableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -45,6 +45,17 @@ MainWindow::MainWindow(QWidget *parent)
     QIcon ButtonIconR(pixmapR);
     ui->righttoolButton->setIcon(ButtonIconR);
     ui->righttoolButton->setIconSize(QSize(pixmapR.rect().size()));
+
+    QMenu *menu = new QMenu(this);
+    QAction* File = new QAction(tr("File"),this);
+    File->setIcon(QIcon(":/icons/fileicon.png"));
+    File->setIconVisibleInMenu(true);
+    menu->addAction(File);
+    QAction* Folder = new QAction(tr("Folder"),this);
+    Folder->setIcon(QIcon(":/icons/foldericon.png"));
+    Folder->setIconVisibleInMenu(true);
+    menu->addAction(Folder);
+    ui->createpushButton->setMenu(menu);
 
 }
 
@@ -144,6 +155,14 @@ void MainWindow::showlist()
             QTableWidgetItem* empty = new QTableWidgetItem("");
             empty->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,3,empty);
+            auto *timeinfo=it->GetTimeWrite();
+            QTableWidgetItem* time = new QTableWidgetItem(QString::number(timeinfo->tm_mday)+"."+
+                                                          QString::number(timeinfo->tm_mon)+"."+
+                                                          QString::number(timeinfo->tm_year+1900)+" "+
+                                                          QString::number(timeinfo->tm_hour)+":"+QString::number(timeinfo->tm_min));
+            time->setFlags(Qt::NoItemFlags);
+            time->setTextAlignment(Qt::AlignLeft);
+            ui->filetableWidget->setItem(i,4,time);
         }
         else
         {
@@ -156,6 +175,14 @@ void MainWindow::showlist()
              QTableWidgetItem* size =new QTableWidgetItem(QString::number(it->GetSize())+" Bytes");
              size->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,3,size);
+            auto *timeinfo=it->GetTimeWrite();
+            QTableWidgetItem* time = new QTableWidgetItem(QString::number(timeinfo->tm_mday)+"."+
+                                                          QString::number(timeinfo->tm_mon)+"."+
+                                                          QString::number(timeinfo->tm_year+1900)+" "+
+                                                          QString::number(timeinfo->tm_hour)+":"+QString::number(timeinfo->tm_min));
+            time->setFlags(Qt::NoItemFlags);
+            time->setTextAlignment(Qt::AlignLeft);
+            ui->filetableWidget->setItem(i,4,time);
         }
     }
 }

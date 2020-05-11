@@ -24,8 +24,15 @@ int File::GetSize()
 tm* File::GetTimeCreate()
 {
 	tm* timeinfo;
-	timeinfo = _localtime64(&this->fileinfo.time_write);
+    timeinfo = _localtime64(&this->fileinfo.time_create);
 	return timeinfo;
+}
+
+tm* File::GetTimeWrite()
+{
+    tm* timeinfo;
+    timeinfo = _localtime64(&this->fileinfo.time_write);
+    return timeinfo;
 }
 
 bool File::IsHidden()

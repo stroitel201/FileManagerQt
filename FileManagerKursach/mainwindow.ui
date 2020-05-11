@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>File Manager</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -60,6 +60,27 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="deletepushButton">
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="copypushButton">
+          <property name="text">
+           <string>Copy</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="movepushButton">
+          <property name="text">
+           <string>Move</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="openButton">
           <property name="text">
            <string>Open</string>
@@ -82,13 +103,13 @@
        <widget class="QLabel" name="label">
         <property name="minimumSize">
          <size>
-          <width>40</width>
+          <width>35</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>40</width>
+          <width>35</width>
           <height>16777215</height>
          </size>
         </property>
@@ -123,6 +144,32 @@
        <widget class="QCheckBox" name="showHidcheckBox">
         <property name="text">
          <string>Show hidden</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="createpushButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Create</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="infopushButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Information</string>
         </property>
        </widget>
       </item>
