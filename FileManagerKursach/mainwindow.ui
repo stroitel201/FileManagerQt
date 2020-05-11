@@ -6,172 +6,176 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1063</width>
-    <height>594</height>
+    <width>963</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>File Manager</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QLineEdit" name="leftlineEdit"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="leftGoToButton">
-        <property name="text">
-         <string>Go to</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QToolButton" name="lefttoolButton">
-          <property name="maximumSize">
-           <size>
-            <width>35</width>
-            <height>28</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLineEdit" name="leftlineEdit"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="leftGoToButton">
+            <property name="text">
+             <string>Go to</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QToolButton" name="righttoolButton">
-          <property name="maximumSize">
-           <size>
-            <width>35</width>
-            <height>28</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>...</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QToolButton" name="lefttoolButton">
+            <property name="maximumSize">
+             <size>
+              <width>35</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="righttoolButton">
+            <property name="maximumSize">
+             <size>
+              <width>35</width>
+              <height>28</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deletepushButton">
+            <property name="text">
+             <string>Delete</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="copypushButton">
+            <property name="text">
+             <string>Copy</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="movepushButton">
+            <property name="text">
+             <string>Move</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="openButton">
+            <property name="text">
+             <string>Open</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="QPushButton" name="deletepushButton">
-          <property name="text">
-           <string>Delete</string>
-          </property>
-         </widget>
+         <widget class="QTableWidget" name="filetableWidget"/>
         </item>
         <item>
-         <widget class="QPushButton" name="copypushButton">
-          <property name="text">
-           <string>Copy</string>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="movepushButton">
-          <property name="text">
-           <string>Move</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="openButton">
-          <property name="text">
-           <string>Open</string>
-          </property>
-         </widget>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>35</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>DRIVE</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QListWidget" name="drivelistWidget">
+            <property name="maximumSize">
+             <size>
+              <width>150</width>
+              <height>26</height>
+             </size>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="viewMode">
+             <enum>QListView::IconMode</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="showHidcheckBox">
+            <property name="text">
+             <string>Show hidden</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="createpushButton">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Create</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="infopushButton">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Information</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
-      </item>
-      <item>
-       <widget class="QTableWidget" name="filetableWidget"/>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetNoConstraint</enum>
-      </property>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="minimumSize">
-         <size>
-          <width>35</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>35</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>DRIVE</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QListWidget" name="drivelistWidget">
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>26</height>
-         </size>
-        </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAlwaysOff</enum>
-        </property>
-        <property name="autoScroll">
-         <bool>false</bool>
-        </property>
-        <property name="viewMode">
-         <enum>QListView::IconMode</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="showHidcheckBox">
-        <property name="text">
-         <string>Show hidden</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="createpushButton">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Create</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="infopushButton">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Information</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>
@@ -182,7 +186,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1063</width>
+     <width>963</width>
      <height>26</height>
     </rect>
    </property>

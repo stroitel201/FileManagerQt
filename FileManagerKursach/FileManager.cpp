@@ -479,6 +479,7 @@ int FileManager::CommandDEL(File file)
 	}
 	else 
 	{
+        GetFileFolders();
 		DeleteNonEmptyDirectory(file.GetPath());
 		if (DeletFileOrFolder(file.GetPath()))
 			return 0;
@@ -512,6 +513,7 @@ void FileManager::DeleteNonEmptyDirectory(const char* path)
 				strcat(FromPach, "\\");
 				if (EmptyDirectory(strcat(FromPach, fileinfo.name))){
 					DeleteNonEmptyDirectory(FromPach);
+                    DeletFileOrFolder(FromPach);
 					*(strrchr(FromPach, '\\') + 1) = '\0';
 				}
 				else {
@@ -533,10 +535,10 @@ void FileManager::DeleteNonEmptyDirectory(const char* path)
 }
 
 bool FileManager::DeletFileOrFolder(const char* path){
-	bool flag = true;
+    bool flag = true;
 	if (remove(path) != 0)
 		if (_rmdir(path) == -1)
-			flag = false;
+            flag = false;
 
 	return flag;
 }

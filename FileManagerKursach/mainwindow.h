@@ -30,6 +30,8 @@ private slots:
 
      void on_righttoolButton_pressed();
 
+     void on_deletepushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     Controller controller;

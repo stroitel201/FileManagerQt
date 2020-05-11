@@ -156,12 +156,25 @@ void MainWindow::showlist()
             empty->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,3,empty);
             auto *timeinfo=it->GetTimeWrite();
-            QTableWidgetItem* time = new QTableWidgetItem(QString::number(timeinfo->tm_mday)+"."+
-                                                          QString::number(timeinfo->tm_mon)+"."+
+            QString day; QString month; QString hour; QString min;
+            if(timeinfo->tm_mday<10)
+                day="0"+QString::number(timeinfo->tm_mday);
+            else day=QString::number(timeinfo->tm_mday);
+            if(timeinfo->tm_mon<10)
+                month="0"+QString::number(timeinfo->tm_mon);
+            else month=QString::number(timeinfo->tm_mon);
+            if(timeinfo->tm_hour<10)
+                hour="0"+QString::number(timeinfo->tm_hour);
+            else hour=QString::number(timeinfo->tm_min);
+            if(timeinfo->tm_min<10)
+                min="0"+QString::number(timeinfo->tm_min);
+            else min=QString::number(timeinfo->tm_min);
+            QTableWidgetItem* time = new QTableWidgetItem(day+"."+
+                                                          month+"."+
                                                           QString::number(timeinfo->tm_year+1900)+" "+
-                                                          QString::number(timeinfo->tm_hour)+":"+QString::number(timeinfo->tm_min));
+                                                          hour+":"+min);
             time->setFlags(Qt::NoItemFlags);
-            time->setTextAlignment(Qt::AlignLeft);
+           // time->setTextAlignment(Qt::AlignLeft);
             ui->filetableWidget->setItem(i,4,time);
         }
         else
@@ -176,12 +189,25 @@ void MainWindow::showlist()
              size->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,3,size);
             auto *timeinfo=it->GetTimeWrite();
-            QTableWidgetItem* time = new QTableWidgetItem(QString::number(timeinfo->tm_mday)+"."+
-                                                          QString::number(timeinfo->tm_mon)+"."+
+            QString day; QString month; QString hour; QString min;
+            if(timeinfo->tm_mday<10)
+                day="0"+QString::number(timeinfo->tm_mday);
+            else day=QString::number(timeinfo->tm_mday);
+            if(timeinfo->tm_mon<10)
+                month="0"+QString::number(timeinfo->tm_mon);
+            else month=QString::number(timeinfo->tm_mon);
+            if(timeinfo->tm_hour<10)
+                hour="0"+QString::number(timeinfo->tm_hour);
+            else hour=QString::number(timeinfo->tm_min);
+            if(timeinfo->tm_min<10)
+                min="0"+QString::number(timeinfo->tm_min);
+            else min=QString::number(timeinfo->tm_min);
+            QTableWidgetItem* time = new QTableWidgetItem(day+"."+
+                                                          month+"."+
                                                           QString::number(timeinfo->tm_year+1900)+" "+
-                                                          QString::number(timeinfo->tm_hour)+":"+QString::number(timeinfo->tm_min));
+                                                          hour+":"+min);
             time->setFlags(Qt::NoItemFlags);
-            time->setTextAlignment(Qt::AlignLeft);
+           // time->setTextAlignment(Qt::AlignLeft);
             ui->filetableWidget->setItem(i,4,time);
         }
     }
@@ -204,6 +230,23 @@ void MainWindow::on_righttoolButton_pressed()
     if(controller.RedoAdress.size()==0)
         return;
     controller.leftRedo();
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+    showlist();
+}
+
+void MainWindow::on_deletepushButton_clicked()
+{
+    QMessageBox::StandardButton reply=QMessageBox::question(this,"Удалить","Вы действительно хотите удалить файл?",
+                                                            QMessageBox::Yes|QMessageBox::No);
+    if(reply==QMessageBox::No)
+        return;
+    int res=controller.LeftManager.CommandDEL(controller.leftchosenfile);
+    if(res==1)
+    {
+        QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+        return;
+    }
     controller.LeftManager.GetFileFolders();
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
     showlist();
