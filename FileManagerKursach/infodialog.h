@@ -14,7 +14,7 @@ class infoDialog : public QDialog
 
 public:
     explicit infoDialog(QWidget *parent = nullptr);
-    infoDialog(File* file,QWidget *parent = nullptr);
+    infoDialog(File* file,bool side,QWidget *parent = nullptr);
     ~infoDialog();
 
 signals:
@@ -32,6 +32,7 @@ private slots:
 
 private:
     int checkboxflag=1;
+    bool side;
     File filec;
     Ui::infoDialog *ui;
 };

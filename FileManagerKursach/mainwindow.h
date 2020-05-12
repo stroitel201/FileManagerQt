@@ -22,6 +22,13 @@ public slots:
      void on_rename_recieve(const string &name);
      void close_recieve();
      void on_create_recieve(const string &name,bool type);
+
+     //////////////////////////////////////////////
+
+     void on_checkbox_recieveR(const bool& flagattr, const bool& flagtumb);
+      void on_rename_recieveR(const string &name);
+      void close_recieveR();
+      void on_create_recieveR(const string &name,bool type);
 private slots:
     void on_leftGoToButton_clicked();
     void ondrivelistItemClicked(QListWidgetItem* item);
@@ -45,10 +52,40 @@ private slots:
 
      void on_actionExit_triggered();
 
+     //////////////////////////////////////////////
+
+     void on_leftGoToButtonR_clicked();
+     void ondrivelistItemClickedR(QListWidgetItem* item);
+     void on_showHidcheckBoxR_stateChanged(int arg1);
+     //void on_filetableItem_Clicked(QTableWidgetItem* item);
+      void on_openButtonR_clicked();
+
+     void on_fileAction_clickedR();
+      void on_folderAction_clickedR();
+      void on_lefttoolButtonR_pressed();
+
+      void on_righttoolButtonR_pressed();
+
+      void on_deletepushButtonR_clicked();
+
+      void on_filetableWidgetR_clicked(const QModelIndex &index);
+
+      void on_infopushButtonR_clicked();
+
+      void on_filetableWidgetR_itemDoubleClicked(QTableWidgetItem *item);
+
+
+
+      void on_copypushButton_clicked();
+
+      void on_copypushButtonR_clicked();
+
 private:
     bool start=false;
+    bool startR=false;
     Ui::MainWindow *ui;
     Controller controller;
     void showlist();
+    void showlistR();
 };
 #endif // MAINWINDOW_H

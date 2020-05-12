@@ -8,13 +8,16 @@ createDialog::createDialog(QWidget *parent) :
     ui->setupUi(this);
 }
 
-createDialog::createDialog(bool type,QWidget *parent) :
+createDialog::createDialog(bool type,bool side,QWidget *parent) :
     QDialog(parent),
     ui(new Ui::createDialog)
 {
     ui->setupUi(this);
+    this->side=side;
     this->typec=type;
-    connect(this,SIGNAL(createsig(string,bool)),parent,SLOT(on_create_recieve(string,bool)));
+    if (side)
+        connect(this,SIGNAL(createsig(string,bool)),parent,SLOT(on_create_recieve(string,bool)));
+    else connect(this,SIGNAL(createsig(string,bool)),parent,SLOT(on_create_recieveR(string,bool)));
     if(type)
     {
         QPixmap pix("C:/Users/olegv/source/repos/FileManagerKursach/foldericon.png");

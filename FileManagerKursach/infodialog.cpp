@@ -9,16 +9,26 @@ infoDialog::infoDialog(QWidget *parent) :
  ui->setupUi(this);
 }
 
-infoDialog::infoDialog(File* file,QWidget *parent):
+infoDialog::infoDialog(File* file,bool side,QWidget *parent):
     QDialog(parent),
     ui(new Ui::infoDialog)
 {
 
     ui->setupUi(this);
+    this->side=side;
     //connect(ui->renamepushButton,SIGNAL(clicked()),this,SLOT(on_okpushButton_clicked()));
-    connect(this,SIGNAL(renamesig(string)),parent,SLOT(on_rename_recieve(string)));
-    connect(this,SIGNAL(checkboxsig(bool,bool)),parent,SLOT(on_checkbox_recieve(bool,bool)));
-    connect(this,SIGNAL(closesig()),parent,SLOT(close_recieve()));
+    if(side)
+    {
+        connect(this,SIGNAL(renamesig(string)),parent,SLOT(on_rename_recieve(string)));
+        connect(this,SIGNAL(checkboxsig(bool,bool)),parent,SLOT(on_checkbox_recieve(bool,bool)));
+        connect(this,SIGNAL(closesig()),parent,SLOT(close_recieve()));
+    }
+    else
+    {
+        connect(this,SIGNAL(renamesig(string)),parent,SLOT(on_rename_recieveR(string)));
+        connect(this,SIGNAL(checkboxsig(bool,bool)),parent,SLOT(on_checkbox_recieveR(bool,bool)));
+        connect(this,SIGNAL(closesig()),parent,SLOT(close_recieveR()));
+    }
     this->filec=*file;
     if (file->IsSubdir())
     {

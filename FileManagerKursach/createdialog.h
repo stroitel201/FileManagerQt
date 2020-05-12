@@ -16,7 +16,7 @@ class createDialog : public QDialog
     void createsig(const string &name, const bool& type);
 public:
     explicit createDialog(QWidget *parent = nullptr);
-    createDialog(bool type,QWidget *parent = nullptr);
+    createDialog(bool type,bool side,QWidget *parent = nullptr);
     ~createDialog();
 
 private slots:
@@ -26,6 +26,7 @@ private slots:
 
 private:
      bool typec;
+     bool side;
     Ui::createDialog *ui;
 };
 
