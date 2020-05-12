@@ -80,6 +80,10 @@ private slots:
 
       void on_copypushButtonR_clicked();
 
+      void on_movepushButton_clicked();
+
+      void on_movepushButtonR_clicked();
+
 private:
     bool start=false;
     bool startR=false;

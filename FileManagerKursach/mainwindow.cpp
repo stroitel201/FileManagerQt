@@ -1020,3 +1020,87 @@ void MainWindow::on_copypushButtonR_clicked()
     showlist();
      ui->filetableWidgetR->clearSelection();
 }
+
+void MainWindow::on_movepushButton_clicked()
+{
+    auto list=ui->filetableWidget->selectedItems();
+    if(list.empty())return;
+
+
+    auto it=list.begin();
+    for(;it!=list.end();++it)
+    {
+        QTableWidgetItem* item=*it;
+         auto its=controller.leftshowlist.begin();
+         for(;its!=controller.leftshowlist.end();++its)
+         {
+             string tmp=item->text().toStdString();
+             if(tmp==its->GetName())
+                 break;
+         }
+         controller.leftchosenfile=*its;
+         if(controller.leftchosenfile.IsRdonly())
+         {
+             QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+             return;
+         }
+        int res=controller.LeftManager.CommandMOVE(controller.leftchosenfile,controller.RightManager.getPath());
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа");
+            return;
+        }
+    }
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+
+    showlist();
+
+    controller.RightManager.GetFileFolders();
+    controller.rightshowlist=controller.RightManager.GetListOfFiles();
+
+    showlistR();
+     ui->filetableWidget->clearSelection();
+}
+
+void MainWindow::on_movepushButtonR_clicked()
+{
+    auto list=ui->filetableWidgetR->selectedItems();
+    if(list.empty())return;
+
+
+    auto it=list.begin();
+    for(;it!=list.end();++it)
+    {
+        QTableWidgetItem* item=*it;
+         auto its=controller.rightshowlist.begin();
+         for(;its!=controller.rightshowlist.end();++its)
+         {
+             string tmp=item->text().toStdString();
+             if(tmp==its->GetName())
+                 break;
+         }
+         controller.rightchosenfile=*its;
+         if(controller.rightchosenfile.IsRdonly())
+         {
+             QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+             return;
+         }
+        int res=controller.RightManager.CommandMOVE(controller.rightchosenfile,controller.LeftManager.getPath());
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа");
+            return;
+        }
+    }
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+
+    showlist();
+
+    controller.RightManager.GetFileFolders();
+    controller.rightshowlist=controller.RightManager.GetListOfFiles();
+
+    showlistR();
+     ui->filetableWidget->clearSelection();
+}
