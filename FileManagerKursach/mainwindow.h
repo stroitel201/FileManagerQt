@@ -21,6 +21,7 @@ public slots:
     void on_checkbox_recieve(const bool& flagattr, const bool& flagtumb);
      void on_rename_recieve(const string &name);
      void close_recieve();
+     void on_create_recieve(const string &name,bool type);
 private slots:
     void on_leftGoToButton_clicked();
     void ondrivelistItemClicked(QListWidgetItem* item);
@@ -28,8 +29,8 @@ private slots:
     //void on_filetableItem_Clicked(QTableWidgetItem* item);
      void on_openButton_clicked();
 
-
-
+    void on_fileAction_clicked();
+     void on_folderAction_clicked();
      void on_lefttoolButton_pressed();
 
      void on_righttoolButton_pressed();
@@ -42,7 +43,10 @@ private slots:
 
      void on_filetableWidget_itemDoubleClicked(QTableWidgetItem *item);
 
+     void on_actionExit_triggered();
+
 private:
+    bool start=false;
     Ui::MainWindow *ui;
     Controller controller;
     void showlist();

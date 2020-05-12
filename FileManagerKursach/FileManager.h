@@ -21,9 +21,9 @@ public:
 	void GetFileFolders();
 	FileManager();
 	int CommandDEL(File file);
-	int CommandMKDIR();
+    int CommandMKDIR(const char*);
 	int CommandRENAME(File file, const char*);
-	int CommandFILE();
+    int CommandFILE(const char*);
 	int CommandCOPY(File file, const char*);
 	int CommandMOVE(File file, const char*);
 	void CommandCDParent();

@@ -6,5 +6,6 @@
         <file>rightArrowicon.png</file>
         <file>rightSmallArrowicon.png</file>
         <file>leftSmallArrowicon.png</file>
+        <file>exiticon.png</file>
     </qresource>
 </RCC>

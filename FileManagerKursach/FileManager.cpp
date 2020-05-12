@@ -414,9 +414,12 @@ bool FileManager::MoveFileFolders(const char* from, const char* WhereToMove)
 		return true;
 }
 
-int FileManager::CommandFILE() 
+int FileManager::CommandFILE(const char* name)
 {
-	if (FileCreation(CurrentPath))
+    strcpy(pathfind,CurrentPath);
+    strcat(pathfind,"\\");
+    strcat(pathfind,name);
+    if (FileCreation(pathfind))
 		return 0;
 	else return 1;
 }
@@ -425,10 +428,13 @@ bool FileManager::FileCreation(const char* path)
 {	
 	std::ofstream out(path);
 	if (out)
+    {
+        out.close();
 		return true;
+    }
 	else
 		return false;
-	out.close();
+
 }
 
 int FileManager::CommandRENAME(File file, const char* newName) {						//	команда переименование файла или папки
@@ -453,8 +459,11 @@ bool FileManager::RenamFileOrFolder(const char* path, const char* newName){
 	return flag;
 }
 
-int FileManager::CommandMKDIR() {								//	команда создание папки
-	if (CreateDir(CurrentPath))
+int FileManager::CommandMKDIR(const char* name) {
+    strcpy(pathfind,CurrentPath);
+    strcat(pathfind,"\\");
+    strcat(pathfind,name);
+    if (CreateDir(pathfind))
 		return 0;
 	else
 		return 1;
@@ -479,7 +488,7 @@ int FileManager::CommandDEL(File file)
 	}
 	else 
 	{
-        GetFileFolders();
+       // GetFileFolders();
 		DeleteNonEmptyDirectory(file.GetPath());
 		if (DeletFileOrFolder(file.GetPath()))
 			return 0;

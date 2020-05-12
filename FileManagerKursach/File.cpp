@@ -82,8 +82,19 @@ DWORD File::GetAttr()
 
 string File::GetExp()
 {
+    if(this->IsSubdir())
+    {
+        string tmps="";
+        return tmps;
+    }
     char tmp[MAX_PATH];
+    if( strrchr(fileinfo.name,'.')==NULL)
+    {
+        string tmps="";
+        return tmps;
+    }
     strcpy(tmp,strrchr(fileinfo.name,'.')+1);
+
     string tmps = string(tmp);
     return tmps;
 }

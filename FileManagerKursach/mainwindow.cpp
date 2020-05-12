@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "infodialog.h"
+#include"createdialog.h"
 #include "QLineEdit"
 #include <QMessageBox>
 #include <QHeaderView>
@@ -55,10 +56,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     QMenu *menu = new QMenu(this);
     QAction* File = new QAction(tr("File"),this);
+    connect(File,SIGNAL(triggered()),this,SLOT(on_fileAction_clicked()));
+
     File->setIcon(QIcon(":/icons/fileicon.png"));
     File->setIconVisibleInMenu(true);
     menu->addAction(File);
     QAction* Folder = new QAction(tr("Folder"),this);
+    connect(Folder,SIGNAL(triggered()),this,SLOT(on_folderAction_clicked()));
     Folder->setIcon(QIcon(":/icons/foldericon.png"));
     Folder->setIconVisibleInMenu(true);
     menu->addAction(Folder);
@@ -91,6 +95,7 @@ void MainWindow::ondrivelistItemClicked(QListWidgetItem* item)
     if(res==1) QMessageBox::critical(this,"Ошибка","Устройство не готово");
     else
     {
+        start=true;
          controller.changeleftAdress();
         showlist();
     }
@@ -295,9 +300,9 @@ void MainWindow::on_deletepushButton_clicked()
     }
     controller.LeftManager.GetFileFolders();
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
-    QMessageBox::information(this,"g","loh");
+
     showlist();
-     QMessageBox::information(this,"g","pidor");
+
      ui->filetableWidget->clearSelection();
 }
 
@@ -430,4 +435,55 @@ void MainWindow::close_recieve()
     controller.LeftManager.GetFileFolders();
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
     showlist();
+}
+void MainWindow::on_fileAction_clicked()
+{
+    if(start==false)
+        return;
+    createDialog info(false,this);
+
+    info.setModal(true);
+    info.exec();
+}
+void MainWindow::on_folderAction_clicked()
+{
+    if(start==false)
+        return;
+    createDialog info(true,this);
+
+    info.setModal(true);
+    info.exec();
+}
+void MainWindow::on_create_recieve(const string& name,bool type)
+{
+    if(type)
+    {
+        int res=controller.LeftManager.CommandMKDIR(name.c_str());
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+        controller.LeftManager.GetFileFolders();
+        controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+        showlist();
+    }
+    else
+    {
+        int res=controller.LeftManager.CommandFILE(name.c_str());
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+        controller.LeftManager.GetFileFolders();
+        controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+        showlist();
+    }
+
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    QApplication::quit();
 }
