@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "infodialog.h"
 #include "QLineEdit"
 #include <QMessageBox>
 #include <QHeaderView>
@@ -13,7 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     for(auto it=controller.leftdrives.begin();it!=controller.leftdrives.end();++it)
         ui->drivelistWidget->addItem(QString::fromStdString(*it));
     connect(ui->drivelistWidget,SIGNAL(itemPressed(QListWidgetItem*)),this,SLOT(ondrivelistItemClicked(QListWidgetItem*)));
-    connect(ui->filetableWidget,&QTableWidget::itemClicked,this,&MainWindow::on_filetableItem_Clicked);
+    //connect(ui->filetableWidget,&QTableWidget::itemClicked,this,&MainWindow::on_filetableItem_Clicked);
+
+
+
+
     ui->filetableWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 
     QStringList tableheader;
@@ -68,7 +73,7 @@ MainWindow::~MainWindow()
 
 
 
-void MainWindow::on_filetableItem_Clicked(QTableWidgetItem* item)
+/*void MainWindow::on_filetableItem_Clicked(QTableWidgetItem* item)
 {
    auto it=controller.leftshowlist.begin();
     for(;it!=controller.leftshowlist.end();++it)
@@ -78,7 +83,7 @@ void MainWindow::on_filetableItem_Clicked(QTableWidgetItem* item)
             break;
     }
     controller.leftchosenfile=*it;
-}
+}*/
 
 void MainWindow::ondrivelistItemClicked(QListWidgetItem* item)
 {
@@ -89,6 +94,7 @@ void MainWindow::ondrivelistItemClicked(QListWidgetItem* item)
          controller.changeleftAdress();
         showlist();
     }
+
 }
 
 void MainWindow::on_leftGoToButton_clicked()
@@ -117,16 +123,31 @@ void MainWindow::on_showHidcheckBox_stateChanged(int arg1)
 
 void MainWindow::on_openButton_clicked()
 {
+    auto list=ui->filetableWidget->selectedItems();
+    if(list.empty())return;
+    QTableWidgetItem* item = list[0];
+    auto its=controller.leftshowlist.begin();
+    for(;its!=controller.leftshowlist.end();++its)
+    {
+        string tmp=item->text().toStdString();
+        if(tmp==its->GetName())
+            break;
+    }
+    controller.leftchosenfile=*its;
     if(controller.leftchosenfile.IsSubdir())
     {
         controller.LeftManager.setPath(controller.leftchosenfile.GetPath());
         controller.LeftManager.GetFileFolders();
         controller.changeleftAdress();
         showlist();
-
+        ui->filetableWidget->clearSelection();
     }
 
-    else controller.LeftManager.OpenFile(controller.leftchosenfile);
+    else
+    {
+        controller.LeftManager.OpenFile(controller.leftchosenfile);
+        ui->filetableWidget->clearSelection();
+    }
 }
 
 
@@ -240,12 +261,14 @@ void MainWindow::on_righttoolButton_pressed()
 
 void MainWindow::on_deletepushButton_clicked()
 {
+    auto list=ui->filetableWidget->selectedItems();
+    if(list.empty())return;
     QMessageBox::StandardButton reply=QMessageBox::question(this,"Удалить","Вы действительно хотите удалить файлы?",
                                                             QMessageBox::Yes|QMessageBox::No);
     if(reply==QMessageBox::No)
         return;
 
-    auto list=ui->filetableWidget->selectedItems();
+
     auto it=list.begin();
     for(;it!=list.end();++it)
     {
@@ -258,6 +281,11 @@ void MainWindow::on_deletepushButton_clicked()
                  break;
          }
          controller.leftchosenfile=*its;
+         if(controller.leftchosenfile.IsRdonly())
+         {
+             QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+             return;
+         }
         int res=controller.LeftManager.CommandDEL(controller.leftchosenfile);
         if(res==1)
         {
@@ -267,7 +295,10 @@ void MainWindow::on_deletepushButton_clicked()
     }
     controller.LeftManager.GetFileFolders();
     controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+    QMessageBox::information(this,"g","loh");
     showlist();
+     QMessageBox::information(this,"g","pidor");
+     ui->filetableWidget->clearSelection();
 }
 
 void MainWindow::on_filetableWidget_clicked(const QModelIndex &index)
@@ -275,8 +306,128 @@ void MainWindow::on_filetableWidget_clicked(const QModelIndex &index)
     auto list=ui->filetableWidget->selectedItems();
     if(list.size()==1)
     {
-        on_filetableItem_Clicked(list.last());
+        //on_filetableItem_Clicked(list.last());
+        return;
+    }
+    else if(list.size()==2)
+    {
+        QTableWidgetItem* temp=list.last();
+        ui->filetableWidget->clearSelection();
+        ui->filetableWidget->setItemSelected(temp,true);
         return;
     }
     ui->filetableWidget->clearSelection();
+}
+
+void MainWindow::on_infopushButton_clicked()
+{
+    auto list=ui->filetableWidget->selectedItems();
+    if(list.empty())return;
+    QTableWidgetItem* item = list[0];
+    auto its=controller.leftshowlist.begin();
+    for(;its!=controller.leftshowlist.end();++its)
+    {
+        string tmp=item->text().toStdString();
+        if(tmp==its->GetName())
+            break;
+    }
+    controller.leftchosenfile=*its;
+    File* tmp=&controller.leftchosenfile;
+    ui->filetableWidget->clearSelection();
+    infoDialog info(tmp,this);
+    //connect(&info, SIGNAL(renamesig(string name)), SLOT(on_rename_clicked(string name)));
+    info.setModal(true);
+    info.exec();
+
+}
+
+void MainWindow::on_rename_recieve(const string &name)
+{
+
+   int result = controller.LeftManager.CommandRENAME(controller.leftchosenfile,name.c_str());
+   if(result==1)
+   {
+       QMessageBox::critical(this,"Ошибка","Возможно у вас нет доступа или файл занят другим процессом");
+       return;
+   }
+   controller.LeftManager.GetFileFolders();
+   controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+   showlist();
+
+    return;
+}
+
+void MainWindow::on_filetableWidget_itemDoubleClicked(QTableWidgetItem *item)
+{
+    auto its=controller.leftshowlist.begin();
+    for(;its!=controller.leftshowlist.end();++its)
+    {
+        string tmp=item->text().toStdString();
+        if(tmp==its->GetName())
+            break;
+    }
+    controller.leftchosenfile=*its;
+    if(controller.leftchosenfile.IsSubdir())
+    {
+        controller.LeftManager.setPath(controller.leftchosenfile.GetPath());
+        controller.LeftManager.GetFileFolders();
+        controller.changeleftAdress();
+        showlist();
+        ui->filetableWidget->clearSelection();
+    }
+
+    else
+    {
+        controller.LeftManager.OpenFile(controller.leftchosenfile);
+        ui->filetableWidget->clearSelection();
+    }
+}
+
+void MainWindow::on_checkbox_recieve(const bool& flagattr, const bool& flagtumb)
+{
+    if(flagattr==true&&flagtumb==true)
+    {
+        int res=controller.LeftManager.CommandChangeRdoAttr(controller.leftchosenfile);
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+
+    }
+    if(flagattr==true&&flagtumb==false)
+    {
+        int res=controller.LeftManager.CommandResetRdoAttr(controller.leftchosenfile);
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+    }
+    if(flagattr==false&&flagtumb==true)
+    {
+        int res=controller.LeftManager.CommandChangeHidAttr(controller.leftchosenfile);
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+    }
+    if(flagattr==false&&flagtumb==false)
+    {
+        int res=controller.LeftManager.CommandResetHidAttr(controller.leftchosenfile);
+        if(res==1)
+        {
+            QMessageBox::critical(this,"Ошибка","Не удалось");
+            return;
+        }
+    }
+
+}
+
+void MainWindow::close_recieve()
+{
+    controller.LeftManager.GetFileFolders();
+    controller.leftshowlist=controller.LeftManager.GetListOfFiles();
+    showlist();
 }

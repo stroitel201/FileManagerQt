@@ -19,6 +19,7 @@ SOURCES += \
     Controller.cpp \
     File.cpp \
     FileManager.cpp \
+    infodialog.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -26,9 +27,11 @@ HEADERS += \
     Controller.h \
     File.h \
     FileManager.h \
+    infodialog.h \
     mainwindow.h
 
 FORMS += \
+    infodialog.ui \
     mainwindow.ui
 
 RESOURCES = \

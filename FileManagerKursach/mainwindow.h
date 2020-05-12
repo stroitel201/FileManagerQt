@@ -5,6 +5,7 @@
 #include "Controller.h"
 #include <QListWidgetItem>
 #include <QTableWidgetItem>
+#include "infodialog.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -16,12 +17,15 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+public slots:
+    void on_checkbox_recieve(const bool& flagattr, const bool& flagtumb);
+     void on_rename_recieve(const string &name);
+     void close_recieve();
 private slots:
     void on_leftGoToButton_clicked();
     void ondrivelistItemClicked(QListWidgetItem* item);
     void on_showHidcheckBox_stateChanged(int arg1);
-    void on_filetableItem_Clicked(QTableWidgetItem* item);
+    //void on_filetableItem_Clicked(QTableWidgetItem* item);
      void on_openButton_clicked();
 
 
@@ -33,6 +37,10 @@ private slots:
      void on_deletepushButton_clicked();
 
      void on_filetableWidget_clicked(const QModelIndex &index);
+
+     void on_infopushButton_clicked();
+
+     void on_filetableWidget_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;

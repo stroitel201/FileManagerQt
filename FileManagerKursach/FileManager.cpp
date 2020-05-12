@@ -61,7 +61,7 @@ bool FileManager::SetRdonlyAttr(const char* path)
     DWORD attr = GetFileAttributesA(path);
     if ((attr & FILE_ATTRIBUTE_READONLY) == 0)
     {
-        if(SetFileAttributesA(path, attr | FILE_ATTRIBUTE_HIDDEN)==0)
+        if(SetFileAttributesA(path, attr | FILE_ATTRIBUTE_READONLY)==0)
             return false;
         else return true;
     }
