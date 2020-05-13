@@ -1,6 +1,7 @@
 #include "infodialog.h"
 #include "ui_infodialog.h"
-
+#include <QTextCodec>
+#include<QFlag>
 infoDialog::infoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::infoDialog)
@@ -15,6 +16,10 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
 {
 
     ui->setupUi(this);
+    QPixmap pixmapM(":/icons/main.png");
+    QIcon ButtonIconM(pixmapM);
+    setWindowIcon(ButtonIconM);
+    setWindowFlag(Qt::WindowContextHelpButtonHint,false);
     this->side=side;
     //connect(ui->renamepushButton,SIGNAL(clicked()),this,SLOT(on_okpushButton_clicked()));
     if(side)
@@ -32,17 +37,17 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
     this->filec=*file;
     if (file->IsSubdir())
     {
-        QPixmap pix("C:/Users/olegv/source/repos/FileManagerKursach/foldericon.png");
+        QPixmap pix(":/icons/foldericon.png");
         ui->piclabel->setScaledContents(true);
         ui->piclabel->setPixmap(pix);
          ui->sizelabel->setText("");
     }
     else
     {
-        QPixmap pix("C:/Users/olegv/source/repos/FileManagerKursach/fileicon.png");
+        QPixmap pix(":/icons/fileicon.png");
          ui->piclabel->setScaledContents(true);
         ui->piclabel->setPixmap(pix);
-         ui->sizelabel->setText("Size: "+QString::number(file->GetSize())+" Bytes");
+         ui->sizelabel->setText("Size: "+QString::number((unsigned long long)file->GetSize())+" Bytes");
     }
     if(file->IsHidden())
         ui->hidcheckBox->setCheckState(Qt::Checked);
@@ -52,8 +57,8 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
     char path[MAX_PATH];
     strcpy(path,file->GetPath());
     *(strrchr(path,'\\')+1)='\0';
-    ui->pathlabel->setText("Path: "+ QString::fromUtf8(path));
-    ui->namelineEdit->setText(QString::fromStdString(file->GetName()));
+    ui->pathlabel->setText("Path: "+ QString::fromLocal8Bit(path));
+    ui->namelineEdit->setText(QString::fromLocal8Bit(file->GetName().c_str()));
     auto *timeinfo=file->GetTimeWrite();
     QString day; QString month; QString hour; QString min;
     if(timeinfo->tm_mday<10)
@@ -101,10 +106,14 @@ void infoDialog::on_okpushButton_clicked()
 
 void infoDialog::on_renamepushButton_clicked()
 {
+    QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+      QByteArray tmp = codec->fromUnicode(ui->namelineEdit->text());
 
-    if(ui->namelineEdit->text().toStdString()==filec.GetName())
+    if(tmp==filec.GetName().c_str())
         return;
-    else emit renamesig(ui->namelineEdit->text().toStdString());
+    else emit renamesig(string(tmp));
+
+    close();
 }
 
 

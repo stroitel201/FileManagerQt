@@ -17,7 +17,7 @@ void FileManager::GetFolders()
 	int result = _findfirst(pathfind, &fileinfo);
 
 	int flag = result;
-	if (result == -1) {std::cout << "\nТакой директории нет\t"; }
+    //if (result == -1) {std::cout << "\nТакой директории нет\t"; }
 	while (flag != -1){
 		if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 
@@ -131,7 +131,8 @@ void FileManager::ChangeDrive(string drive)
 
 void FileManager::OpenFile(File file)
 {
-	ShellExecuteA(NULL, NULL, file.GetPath(), NULL, NULL, SW_RESTORE);
+
+    ShellExecuteA(NULL, NULL, file.GetPath(), NULL, NULL, SW_RESTORE);
 }
 
 vector<File> FileManager::GetListOfFiles()

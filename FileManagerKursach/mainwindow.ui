@@ -272,7 +272,13 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="filetableWidgetR"/>
+         <widget class="QTableWidget" name="filetableWidgetR">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">

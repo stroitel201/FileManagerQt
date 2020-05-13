@@ -2,16 +2,22 @@
 #include "ui_mainwindow.h"
 #include "infodialog.h"
 #include"createdialog.h"
-
+#include <QTextCodec>
 #include "QLineEdit"
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QAbstractItemView>
+#include<QStyleFactory>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QPixmap pixmapM(":/icons/main.png");
+    QIcon ButtonIconM(pixmapM);
+    setWindowIcon(ButtonIconM);
+    setStyle(QStyleFactory::create("windows10"));
     controller.leftdrives=controller.LeftManager.ShowDrive();
     for(auto it=controller.leftdrives.begin();it!=controller.leftdrives.end();++it)
         ui->drivelistWidget->addItem(QString::fromStdString(*it));
@@ -164,8 +170,9 @@ void MainWindow::on_leftGoToButton_clicked()
 {
     ui->filetableWidget->clearSelection();
     if(ui->leftlineEdit->text()=="")return;
-    QByteArray ba=ui->leftlineEdit->text().toLocal8Bit();
-    int res = controller.LeftManager.CommandCD(ba.data());
+    QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+      QByteArray tmp = codec->fromUnicode(ui->leftlineEdit->text());
+    int res = controller.LeftManager.CommandCD(tmp);
     if (res==1) QMessageBox::critical(this,"Ошибка","Такой директории не существует");
     else
     {
@@ -176,6 +183,8 @@ void MainWindow::on_leftGoToButton_clicked()
 
 void MainWindow::on_showHidcheckBox_stateChanged(int arg1)
 {
+    if(start==false)
+        return;
     if(ui->showHidcheckBox->isChecked())
         controller.LeftManager.SetHidON();
     else controller.LeftManager.SetHidOFF();
@@ -192,8 +201,10 @@ void MainWindow::on_openButton_clicked()
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.leftchosenfile=*its;
@@ -230,7 +241,7 @@ void MainWindow::showlist()
         QIcon foldericon = QIcon(p);
         if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
         QIcon fileicon = QIcon(p);
-        ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(it->GetName())));
+        ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromLocal8Bit(it->GetName().c_str())));
         if(it->IsSubdir())
         {
             icon_item->setIcon(foldericon);
@@ -272,7 +283,7 @@ void MainWindow::showlist()
              exp->setTextAlignment(Qt::AlignCenter);
              exp->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,2,exp);
-             QTableWidgetItem* size =new QTableWidgetItem(QString::number(it->GetSize())+" Bytes");
+             QTableWidgetItem* size =new QTableWidgetItem(QString::number((unsigned long long int)(it->GetSize())/1024)+" KBytes");
              size->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,3,size);
             auto *timeinfo=it->GetTimeWrite();
@@ -297,8 +308,8 @@ void MainWindow::showlist()
            // time->setTextAlignment(Qt::AlignLeft);
             ui->filetableWidget->setItem(i,4,time);
         }
-        ui->leftlineEdit->setText(QString::fromUtf8(controller.LeftManager.getPath()));
     }
+        ui->leftlineEdit->setText(QString::fromLocal8Bit(controller.LeftManager.getPath()));
 }
 
 
@@ -340,8 +351,10 @@ void MainWindow::on_deletepushButton_clicked()
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.leftchosenfile=*its;
@@ -391,8 +404,10 @@ void MainWindow::on_infopushButton_clicked()
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.leftchosenfile=*its;
@@ -426,8 +441,10 @@ void MainWindow::on_filetableWidget_itemDoubleClicked(QTableWidgetItem *item)
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.leftchosenfile=*its;
@@ -556,7 +573,7 @@ void MainWindow::ondrivelistItemClickedR(QListWidgetItem* item)
     if(res==1) QMessageBox::critical(this,"Ошибка","Устройство не готово");
     else
     {
-        start=true;
+        startR=true;
          controller.changerightAdress();
         showlistR();
     }
@@ -567,8 +584,9 @@ void MainWindow::on_leftGoToButtonR_clicked()
 {
     ui->filetableWidgetR->clearSelection();
     if(ui->leftlineEditR->text()=="")return;
-    QByteArray ba=ui->leftlineEditR->text().toLocal8Bit();
-    int res = controller.RightManager.CommandCD(ba.data());
+    QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+      QByteArray tmp = codec->fromUnicode(ui->leftlineEditR->text());
+    int res = controller.RightManager.CommandCD(tmp.data());
     if (res==1) QMessageBox::critical(this,"Ошибка","Такой директории не существует");
     else
     {
@@ -579,6 +597,8 @@ void MainWindow::on_leftGoToButtonR_clicked()
 
 void MainWindow::on_showHidcheckBoxR_stateChanged(int arg1)
 {
+    if(startR==false)
+        return;
     if(ui->showHidcheckBoxR->isChecked())
         controller.RightManager.SetHidON();
     else controller.RightManager.SetHidOFF();
@@ -595,8 +615,10 @@ void MainWindow::on_openButtonR_clicked()
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.rightchosenfile=*its;
@@ -633,7 +655,7 @@ void MainWindow::showlistR()
         QIcon foldericon = QIcon(p);
         if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
         QIcon fileicon = QIcon(p);
-        ui->filetableWidgetR->setItem(i,1,new QTableWidgetItem(QString::fromStdString(it->GetName())));
+        ui->filetableWidgetR->setItem(i,1,new QTableWidgetItem(QString::fromLocal8Bit(it->GetName().c_str())));
         if(it->IsSubdir())
         {
             icon_item->setIcon(foldericon);
@@ -675,7 +697,7 @@ void MainWindow::showlistR()
              exp->setTextAlignment(Qt::AlignCenter);
              exp->setFlags(Qt::NoItemFlags);
             ui->filetableWidgetR->setItem(i,2,exp);
-             QTableWidgetItem* size =new QTableWidgetItem(QString::number(it->GetSize())+" Bytes");
+             QTableWidgetItem* size =new QTableWidgetItem(QString::number((unsigned long long int)(it->GetSize())/1024)+" KBytes");
              size->setFlags(Qt::NoItemFlags);
             ui->filetableWidgetR->setItem(i,3,size);
             auto *timeinfo=it->GetTimeWrite();
@@ -700,8 +722,8 @@ void MainWindow::showlistR()
            // time->setTextAlignment(Qt::AlignLeft);
             ui->filetableWidgetR->setItem(i,4,time);
         }
-        ui->leftlineEditR->setText(QString::fromUtf8(controller.RightManager.getPath()));
     }
+     ui->leftlineEditR->setText(QString::fromLocal8Bit(controller.RightManager.getPath()));
 }
 
 
@@ -743,8 +765,10 @@ void MainWindow::on_deletepushButtonR_clicked()
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.rightchosenfile=*its;
@@ -794,8 +818,10 @@ void MainWindow::on_infopushButtonR_clicked()
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.rightchosenfile=*its;
@@ -829,8 +855,10 @@ void MainWindow::on_filetableWidgetR_itemDoubleClicked(QTableWidgetItem *item)
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
-        string tmp=item->text().toStdString();
-        if(tmp==its->GetName())
+        QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+          QByteArray tmp = codec->fromUnicode(item->text());
+
+        if(tmp==its->GetName().c_str())
             break;
     }
     controller.rightchosenfile=*its;
@@ -900,7 +928,7 @@ void MainWindow::close_recieveR()
 }
 void MainWindow::on_fileAction_clickedR()
 {
-    if(start==false)
+    if(startR==false)
         return;
     createDialog info(false,false,this);
 
@@ -909,7 +937,7 @@ void MainWindow::on_fileAction_clickedR()
 }
 void MainWindow::on_folderAction_clickedR()
 {
-    if(start==false)
+    if(startR==false)
         return;
     createDialog info(true,false,this);
 
@@ -947,6 +975,8 @@ void MainWindow::on_create_recieveR(const string& name,bool type)
 
 void MainWindow::on_copypushButton_clicked()
 {
+    if(start==false||startR==false)
+        return;
     auto list=ui->filetableWidget->selectedItems();
     if(list.empty())return;
 
@@ -958,8 +988,10 @@ void MainWindow::on_copypushButton_clicked()
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.leftchosenfile=*its;
@@ -985,6 +1017,8 @@ void MainWindow::on_copypushButton_clicked()
 
 void MainWindow::on_copypushButtonR_clicked()
 {
+    if(start==false||startR==false)
+        return;
     auto list=ui->filetableWidgetR->selectedItems();
     if(list.empty())return;
 
@@ -996,8 +1030,10 @@ void MainWindow::on_copypushButtonR_clicked()
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.rightchosenfile=*its;
@@ -1023,6 +1059,8 @@ void MainWindow::on_copypushButtonR_clicked()
 
 void MainWindow::on_movepushButton_clicked()
 {
+    if(start==false||startR==false)
+        return;
     auto list=ui->filetableWidget->selectedItems();
     if(list.empty())return;
 
@@ -1034,8 +1072,10 @@ void MainWindow::on_movepushButton_clicked()
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.leftchosenfile=*its;
@@ -1065,6 +1105,8 @@ void MainWindow::on_movepushButton_clicked()
 
 void MainWindow::on_movepushButtonR_clicked()
 {
+    if(start==false||startR==false)
+        return;
     auto list=ui->filetableWidgetR->selectedItems();
     if(list.empty())return;
 
@@ -1076,8 +1118,10 @@ void MainWindow::on_movepushButtonR_clicked()
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {
-             string tmp=item->text().toStdString();
-             if(tmp==its->GetName())
+             QTextCodec *codec = QTextCodec::codecForName("Windows-1251");
+               QByteArray tmp = codec->fromUnicode(item->text());
+
+             if(tmp==its->GetName().c_str())
                  break;
          }
          controller.rightchosenfile=*its;
@@ -1102,5 +1146,5 @@ void MainWindow::on_movepushButtonR_clicked()
     controller.rightshowlist=controller.RightManager.GetListOfFiles();
 
     showlistR();
-     ui->filetableWidget->clearSelection();
+     ui->filetableWidget->clearSelection();//
 }
