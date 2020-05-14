@@ -57,23 +57,22 @@ private:
 	void GetFile();							
 	void GetFolders();							
 			
-	bool DeletFileOrFolder(const char*);		//	удаление файла или папки
-	void DeleteNonEmptyDirectory(const char*);	//	удаление непустая директории
+    bool DeletFileOrFolder(const char*);
+    void DeleteNonEmptyDirectory(const char*);
 
-	bool CreateDir(const char*);				//	создание папки
+    bool CreateDir(const char*);
 
-	bool RenamFileOrFolder(const char*, const char*);		//	переименование файла или папки
+    bool RenamFileOrFolder(const char*, const char*);
 
-	bool FileCreation(const char*);				//	создание файла
+    bool FileCreation(const char*);
 
-	void CopyFileFolders(const char*, const char*);	//	копирование файла (папки) из одной папки в другую
-	bool Copy_File(const char*, const char*);		//	копирование файла
+    void CopyFileFolders(const char*, const char*);
+    bool Copy_File(const char*, const char*);
 				
-	bool MoveFileFolders(const char*, const char*);				//	перемещение файла (папки) из одной папки в другую
-
-	bool ValidationFilePath(const char*);			//	проверка пути к файлу
+    bool MoveFileFolders(const char*, const char*);
+    bool ValidationFilePath(const char*);
 	
-	bool EmptyDirectory(const char*);				//	пустая директории
+    bool EmptyDirectory(const char*);
 };
 
 

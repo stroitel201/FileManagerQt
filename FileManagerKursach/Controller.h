@@ -11,6 +11,14 @@ class Controller
 public:
     Controller(){}
 
+
+    vector<string>leftdrives;
+    vector<string>rightdrives;
+
+    File leftchosenfile, rightchosenfile;
+    vector<File> leftshowlist, rightshowlist;
+    FileManager LeftManager, RightManager;
+
     stack<string>rightUndoAdress;
     stack<string>rightRedoAdress;
 
@@ -27,10 +35,4 @@ public:
 
     void changerightAdress();
 
-    vector<string>leftdrives;
-    vector<string>rightdrives;
-
-    File leftchosenfile, rightchosenfile;
-    vector<File> leftshowlist, rightshowlist;
-    FileManager LeftManager, RightManager;
 };

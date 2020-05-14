@@ -2,6 +2,7 @@
 #include "ui_infodialog.h"
 #include <QTextCodec>
 #include<QFlag>
+#include <QMessageBox>
 infoDialog::infoDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::infoDialog)
@@ -40,7 +41,7 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
         QPixmap pix(":/icons/foldericon.png");
         ui->piclabel->setScaledContents(true);
         ui->piclabel->setPixmap(pix);
-         ui->sizelabel->setText("");
+         ui->sizelabel->setText((QString::number(file->GetSize())+" elements inside"));
     }
     else
     {
@@ -49,6 +50,9 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
         ui->piclabel->setPixmap(pix);
          ui->sizelabel->setText("Size: "+QString::number((unsigned long long)file->GetSize())+" Bytes");
     }
+
+    if(file->IsSys())
+        QMessageBox::warning(this,"System","This is a SYSTEM file, any operations on it may lead to unexpected consequenсes!");
     if(file->IsHidden())
         ui->hidcheckBox->setCheckState(Qt::Checked);
     if(file->IsRdonly())

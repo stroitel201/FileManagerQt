@@ -18,6 +18,28 @@ string File::GetName()
 
 int File::GetSize()
 {
+    if(this->IsSubdir())
+    {
+        int count=0;
+        _finddata_t fileinfo;
+
+        char pathfind[MAX_PATH];
+        strcpy(pathfind, this->path);
+        strcat(pathfind, "\\*.*");
+        int result = _findfirst(pathfind, &fileinfo);
+        int flag = result;
+        while (flag != -1)
+        {
+            if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, ".."))
+            {
+                count++;
+            }
+                flag = _findnext(result, &fileinfo);
+        }
+    _findclose(result);
+    return count;
+    }
+
 	return this->fileinfo.size;
 }
 
