@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filetableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //ui->filetableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->filetableWidget->setHorizontalHeaderLabels(tableheader);
-    ui->filetableWidget->setIconSize(QSize(25,25));
+    ui->filetableWidget->setIconSize(QSize(35,35));
     ui->filetableWidget->setColumnWidth(0,10);
     ui->filetableWidget->setColumnWidth(1,200);
     if(QSysInfo::windowsVersion()==QSysInfo::WV_WINDOWS10){
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filetableWidgetR->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //ui->filetableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->filetableWidgetR->setHorizontalHeaderLabels(tableheader);
-    ui->filetableWidgetR->setIconSize(QSize(25,25));
+    ui->filetableWidgetR->setIconSize(QSize(35,35));
     ui->filetableWidgetR->setColumnWidth(0,10);
     ui->filetableWidgetR->setColumnWidth(1,200);
     if(QSysInfo::windowsVersion()==QSysInfo::WV_WINDOWS10){
@@ -198,6 +198,8 @@ void MainWindow::on_openButton_clicked()
     auto list=ui->filetableWidget->selectedItems();
     if(list.empty())return;
     QTableWidgetItem* item = list[0];
+    if(item->column()==0)
+        return;
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
@@ -235,12 +237,31 @@ void MainWindow::showlist()
     {
         QTableWidgetItem *icon_item = new QTableWidgetItem;
         icon_item->setTextAlignment(Qt::AlignCenter);
-        icon_item->setFlags(Qt::NoItemFlags);
+        //icon_item->setFlags(Qt::NoItemFlags);
         QPixmap p;
+        if(it->GetExp()=="exe")
+            p.load(":/icons/exefileicon.png");
+        else if(it->GetExp()=="docx")
+            p.load(":/icons/docxfileicon.png");
+        else if(it->GetExp()=="dll")
+            p.load(":/icons/dllfileicon.png");
+        else if(it->GetExp()=="doc")
+            p.load(":/icons/docfileicon.png");
+        else if(it->GetExp()=="jpg")
+            p.load(":/icons/jpgfileicon.png");
+        else if(it->GetExp()=="pdf")
+            p.load(":/icons/pdffileicon.png");
+        else if(it->GetExp()=="zip"||it->GetExp()=="rar"||it->GetExp()=="7zip")
+            p.load(":/icons/archivefileicon.png");
+        else if(it->GetExp()=="mp3")
+            p.load(":/icons/mp3fileicon.png");
+        else if(it->GetExp()=="mp4"||it->GetExp()=="mov"||it->GetExp()=="avi")
+            p.load(":/icons/vidoefileicon.png");
+        else p.load(":/icons/fileicon.png");
+        QIcon fileicon = QIcon(p);
         if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
         QIcon foldericon = QIcon(p);
-        if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
-        QIcon fileicon = QIcon(p);
+
         ui->filetableWidget->setItem(i,1,new QTableWidgetItem(QString::fromLocal8Bit(it->GetName().c_str())));
         if(it->IsSubdir())
         {
@@ -248,7 +269,7 @@ void MainWindow::showlist()
              ui->filetableWidget->setItem(i,0,icon_item);
              QTableWidgetItem* folder =new QTableWidgetItem("Folder");
              folder->setTextAlignment(Qt::AlignCenter);
-             folder->setFlags(Qt::NoItemFlags);
+            folder->setFlags(Qt::NoItemFlags);
             ui->filetableWidget->setItem(i,2,folder);
             QTableWidgetItem* empty = new QTableWidgetItem("");
             empty->setFlags(Qt::NoItemFlags);
@@ -348,6 +369,8 @@ void MainWindow::on_deletepushButton_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
@@ -380,6 +403,9 @@ void MainWindow::on_deletepushButton_clicked()
 
 void MainWindow::on_filetableWidget_clicked(const QModelIndex &index)
 {
+    if(index.column()==0)
+    {ui->filetableWidget->clearSelection();
+   return;}
     auto list=ui->filetableWidget->selectedItems();
     if(list.size()==1)
     {
@@ -401,6 +427,8 @@ void MainWindow::on_infopushButton_clicked()
     auto list=ui->filetableWidget->selectedItems();
     if(list.empty())return;
     QTableWidgetItem* item = list[0];
+    if(item->column()==0)
+        return;
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
@@ -438,6 +466,9 @@ void MainWindow::on_rename_recieve(const string &name)
 
 void MainWindow::on_filetableWidget_itemDoubleClicked(QTableWidgetItem *item)
 {
+    if(item->column()==0)
+         {ui->filetableWidget->clearSelection();
+        return;}
     auto its=controller.leftshowlist.begin();
     for(;its!=controller.leftshowlist.end();++its)
     {
@@ -612,6 +643,8 @@ void MainWindow::on_openButtonR_clicked()
     auto list=ui->filetableWidgetR->selectedItems();
     if(list.empty())return;
     QTableWidgetItem* item = list[0];
+    if(item->column()==0)
+        return;
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
@@ -649,12 +682,31 @@ void MainWindow::showlistR()
     {
         QTableWidgetItem *icon_item = new QTableWidgetItem;
         icon_item->setTextAlignment(Qt::AlignCenter);
-        icon_item->setFlags(Qt::NoItemFlags);
+        //icon_item->setFlags(Qt::NoItemFlags);
+       // icon_item->setFlags(Qt::ItemFlag::ItemIsTristate);
         QPixmap p;
+        if(it->GetExp()=="exe")
+            p.load(":/icons/exefileicon.png");
+        else if(it->GetExp()=="docx")
+            p.load(":/icons/docxfileicon.png");
+        else if(it->GetExp()=="dll")
+            p.load(":/icons/dllfileicon.png");
+        else if(it->GetExp()=="doc")
+            p.load(":/icons/docfileicon.png");
+        else if(it->GetExp()=="jpg")
+            p.load(":/icons/jpgfileicon.png");
+        else if(it->GetExp()=="pdf")
+            p.load(":/icons/pdffileicon.png");
+        else if(it->GetExp()=="zip"||it->GetExp()=="rar"||it->GetExp()=="7zip")
+            p.load(":/icons/archivefileicon.png");
+        else if(it->GetExp()=="mp3")
+            p.load(":/icons/mp3fileicon.png");
+        else if(it->GetExp()=="mp4"||it->GetExp()=="mov"||it->GetExp()=="avi")
+            p.load(":/icons/vidoefileicon.png");
+        else p.load(":/icons/fileicon.png");
+        QIcon fileicon = QIcon(p);
         if (!p.load(":/icons/foldericon.png") || p.isNull()) { cout << "Error!"; }
         QIcon foldericon = QIcon(p);
-        if (!p.load(":/icons/fileicon.png") || p.isNull()) { cout << "Error!"; }
-        QIcon fileicon = QIcon(p);
         ui->filetableWidgetR->setItem(i,1,new QTableWidgetItem(QString::fromLocal8Bit(it->GetName().c_str())));
         if(it->IsSubdir())
         {
@@ -662,7 +714,8 @@ void MainWindow::showlistR()
              ui->filetableWidgetR->setItem(i,0,icon_item);
              QTableWidgetItem* folder =new QTableWidgetItem("Folder");
              folder->setTextAlignment(Qt::AlignCenter);
-             folder->setFlags(Qt::NoItemFlags);
+            folder->setFlags(Qt::NoItemFlags);
+             //folder->setFlags(Qt::ItemFlag::ItemIsTristate);
             ui->filetableWidgetR->setItem(i,2,folder);
             QTableWidgetItem* empty = new QTableWidgetItem("");
             empty->setFlags(Qt::NoItemFlags);
@@ -762,6 +815,8 @@ void MainWindow::on_deletepushButtonR_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {
@@ -794,6 +849,9 @@ void MainWindow::on_deletepushButtonR_clicked()
 
 void MainWindow::on_filetableWidgetR_clicked(const QModelIndex &index)
 {
+    if(index.column()==0)
+    {ui->filetableWidgetR->clearSelection();
+   return;}
     auto list=ui->filetableWidgetR->selectedItems();
     if(list.size()==1)
     {
@@ -815,6 +873,8 @@ void MainWindow::on_infopushButtonR_clicked()
     auto list=ui->filetableWidgetR->selectedItems();
     if(list.empty())return;
     QTableWidgetItem* item = list[0];
+    if(item->column()==0)
+        return;
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
@@ -852,6 +912,9 @@ void MainWindow::on_rename_recieveR(const string &name)
 
 void MainWindow::on_filetableWidgetR_itemDoubleClicked(QTableWidgetItem *item)
 {
+    if(item->column()==0)
+    {ui->filetableWidgetR->clearSelection();
+   return;}
     auto its=controller.rightshowlist.begin();
     for(;its!=controller.rightshowlist.end();++its)
     {
@@ -985,6 +1048,8 @@ void MainWindow::on_copypushButton_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
@@ -1027,6 +1092,8 @@ void MainWindow::on_copypushButtonR_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {
@@ -1069,6 +1136,8 @@ void MainWindow::on_movepushButton_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.leftshowlist.begin();
          for(;its!=controller.leftshowlist.end();++its)
          {
@@ -1115,6 +1184,8 @@ void MainWindow::on_movepushButtonR_clicked()
     for(;it!=list.end();++it)
     {
         QTableWidgetItem* item=*it;
+        if(item->column()==0)
+            continue;
          auto its=controller.rightshowlist.begin();
          for(;its!=controller.rightshowlist.end();++its)
          {

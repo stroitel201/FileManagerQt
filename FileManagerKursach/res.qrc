@@ -8,5 +8,14 @@
         <file>leftSmallArrowicon.png</file>
         <file>exiticon.png</file>
         <file>main.png</file>
+        <file>archivefileicon.png</file>
+        <file>dllfileicon.png</file>
+        <file>docfileicon.png</file>
+        <file>exefileicon.png</file>
+        <file>mp3fileicon.png</file>
+        <file>pdffileicon.png</file>
+        <file>videofileicon.png</file>
+        <file>jpgfileicon.png</file>
+        <file>docxfileicon.png</file>
     </qresource>
 </RCC>

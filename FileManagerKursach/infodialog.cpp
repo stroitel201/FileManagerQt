@@ -45,9 +45,29 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
     }
     else
     {
-        QPixmap pix(":/icons/fileicon.png");
+        QPixmap p;
+        if(file->GetExp()=="exe")
+            p.load(":/icons/exefileicon.png");
+        if(file->GetExp()=="docx")
+            p.load(":/icons/docxfileicon.png");
+        else if(file->GetExp()=="dll")
+            p.load(":/icons/dllfileicon.png");
+        else if(file->GetExp()=="doc")
+            p.load(":/icons/docfileicon.png");
+        else if(file->GetExp()=="jpg")
+            p.load(":/icons/jpgfileicon.png");
+        else if(file->GetExp()=="pdf")
+            p.load(":/icons/pdffileicon.png");
+        else if(file->GetExp()=="zip"||file->GetExp()=="rar"||file->GetExp()=="7zip")
+            p.load(":/icons/archivefileicon.png");
+        else if(file->GetExp()=="mp3")
+            p.load(":/icons/mp3fileicon.png");
+        else if(file->GetExp()=="mp4"||file->GetExp()=="mov"||file->GetExp()=="avi")
+            p.load(":/icons/vidoefileicon.png");
+        else p.load(":/icons/fileicon.png");
+        QIcon fileicon = QIcon(p);
          ui->piclabel->setScaledContents(true);
-        ui->piclabel->setPixmap(pix);
+        ui->piclabel->setPixmap(p);
          ui->sizelabel->setText("Size: "+QString::number((unsigned long long)file->GetSize())+" Bytes");
     }
 
