@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filetableWidget->setIconSize(QSize(35,35));
     ui->filetableWidget->setColumnWidth(0,10);
     ui->filetableWidget->setColumnWidth(1,200);
+    ui->filetableWidget->setColumnWidth(4,200);
     if(QSysInfo::windowsVersion()==QSysInfo::WV_WINDOWS10){
         setStyleSheet(
             "QHeaderView::section{"
@@ -96,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->filetableWidgetR->setIconSize(QSize(35,35));
     ui->filetableWidgetR->setColumnWidth(0,10);
     ui->filetableWidgetR->setColumnWidth(1,200);
+     ui->filetableWidgetR->setColumnWidth(4,200);
     if(QSysInfo::windowsVersion()==QSysInfo::WV_WINDOWS10){
         setStyleSheet(
             "QHeaderView::section{"
@@ -243,6 +245,8 @@ void MainWindow::showlist()
             p.load(":/icons/exefileicon.png");
         else if(it->GetExp()=="docx")
             p.load(":/icons/docxfileicon.png");
+        else if(it->GetExp()=="torrent")
+            p.load(":/icons/torrfileicon.png");
         else if(it->GetExp()=="dll")
             p.load(":/icons/dllfileicon.png");
         else if(it->GetExp()=="doc")
@@ -284,7 +288,7 @@ void MainWindow::showlist()
             else month=QString::number(timeinfo->tm_mon);
             if(timeinfo->tm_hour<10)
                 hour="0"+QString::number(timeinfo->tm_hour);
-            else hour=QString::number(timeinfo->tm_min);
+            else hour=QString::number(timeinfo->tm_hour);
             if(timeinfo->tm_min<10)
                 min="0"+QString::number(timeinfo->tm_min);
             else min=QString::number(timeinfo->tm_min);
@@ -317,7 +321,7 @@ void MainWindow::showlist()
             else month=QString::number(timeinfo->tm_mon);
             if(timeinfo->tm_hour<10)
                 hour="0"+QString::number(timeinfo->tm_hour);
-            else hour=QString::number(timeinfo->tm_min);
+            else hour=QString::number(timeinfo->tm_hour);
             if(timeinfo->tm_min<10)
                 min="0"+QString::number(timeinfo->tm_min);
             else min=QString::number(timeinfo->tm_min);
@@ -337,6 +341,7 @@ void MainWindow::showlist()
 
 void MainWindow::on_lefttoolButton_pressed()
 {
+    if(start==false)return;
     if(controller.UndoAdress.size()==1)
         return;
     controller.leftUndo();
@@ -347,6 +352,7 @@ void MainWindow::on_lefttoolButton_pressed()
 
 void MainWindow::on_righttoolButton_pressed()
 {
+    if(start==false)return;
     if(controller.RedoAdress.size()==0)
         return;
     controller.leftRedo();
@@ -689,6 +695,8 @@ void MainWindow::showlistR()
             p.load(":/icons/exefileicon.png");
         else if(it->GetExp()=="docx")
             p.load(":/icons/docxfileicon.png");
+        else if(it->GetExp()=="torrent")
+            p.load(":/icons/torrfileicon.png");
         else if(it->GetExp()=="dll")
             p.load(":/icons/dllfileicon.png");
         else if(it->GetExp()=="doc")
@@ -730,7 +738,7 @@ void MainWindow::showlistR()
             else month=QString::number(timeinfo->tm_mon);
             if(timeinfo->tm_hour<10)
                 hour="0"+QString::number(timeinfo->tm_hour);
-            else hour=QString::number(timeinfo->tm_min);
+            else hour=QString::number(timeinfo->tm_hour);
             if(timeinfo->tm_min<10)
                 min="0"+QString::number(timeinfo->tm_min);
             else min=QString::number(timeinfo->tm_min);
@@ -763,7 +771,7 @@ void MainWindow::showlistR()
             else month=QString::number(timeinfo->tm_mon);
             if(timeinfo->tm_hour<10)
                 hour="0"+QString::number(timeinfo->tm_hour);
-            else hour=QString::number(timeinfo->tm_min);
+            else hour=QString::number(timeinfo->tm_hour);
             if(timeinfo->tm_min<10)
                 min="0"+QString::number(timeinfo->tm_min);
             else min=QString::number(timeinfo->tm_min);
@@ -783,6 +791,7 @@ void MainWindow::showlistR()
 
 void MainWindow::on_lefttoolButtonR_pressed()
 {
+    if(startR==false)return;
     if(controller.rightUndoAdress.size()==1)
         return;
     controller.rightUndo();
@@ -793,6 +802,7 @@ void MainWindow::on_lefttoolButtonR_pressed()
 
 void MainWindow::on_righttoolButtonR_pressed()
 {
+    if(startR==false)return;
     if(controller.rightRedoAdress.size()==0)
         return;
     controller.rightRedo();

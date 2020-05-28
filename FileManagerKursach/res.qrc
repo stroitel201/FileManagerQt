@@ -17,5 +17,6 @@
         <file>videofileicon.png</file>
         <file>jpgfileicon.png</file>
         <file>docxfileicon.png</file>
+        <file>torrfileicon.png</file>
     </qresource>
 </RCC>

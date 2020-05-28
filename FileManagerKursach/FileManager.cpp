@@ -8,39 +8,28 @@
 #include <fstream>
 #include "FileManager.h"
 
-// Показ на экран папки
+
 void FileManager::GetFolders()
 {
 	strcpy(pathfind, CurrentPath);
 	strcat(pathfind, "\\*.*");
-	// Начало Поиска
+
 	int result = _findfirst(pathfind, &fileinfo);
 
 	int flag = result;
-    //if (result == -1) {std::cout << "\nТакой директории нет\t"; }
+
 	while (flag != -1){
 		if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 
-			// Проверяем Директория или Нет
 			if (fileinfo.attrib&_A_SUBDIR) {
 				filelist.push_back(File(fileinfo,CurrentPath));
-				/*timeinfo = _localtime64(&fileinfo.time_write);
 
-				std::cout.width(2);
-				std::cout << timeinfo->tm_mday << '.';
-
-				std::cout.width(2);
-				std::cout << timeinfo->tm_mon + 1 << '.' << timeinfo->tm_year + 1900 << ' ';
-				std::cout.width(2);
-				std::cout << timeinfo->tm_hour << ':';
-				std::cout.width(2);
-				std::cout << timeinfo->tm_min << "    <DIR>    " << fileinfo.name << std::endl;*/
 			}
 		}
-		// Продолжаем Поиск
+
 		flag = _findnext(result, &fileinfo);
 	}
-	// Очищаем ресурсы, выделенные под поиск
+
 	_findclose(result);
 }
 
@@ -163,7 +152,7 @@ void FileManager::GetFile()
 		strcpy(pathfind, CurrentPath);
 		strcat(pathfind, "\\*.*");
 
-		// Начало Поиска
+
 		int result = _findfirst(pathfind, &fileinfo);
 
 		int flag = result;
@@ -171,26 +160,16 @@ void FileManager::GetFile()
 		while (flag != -1){
 			if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 
-				// Проверяем Директория или Нет
+				
 				if (!(fileinfo.attrib&_A_SUBDIR)) {
 					filelist.push_back(File(fileinfo,CurrentPath));
-					/*timeinfo = _localtime64(&fileinfo.time_write);
 
-					std::cout.width(2);
-					std::cout << timeinfo->tm_mday << '.';
-					std::cout.width(2);
-					std::cout << timeinfo->tm_mon + 1 << '.' << timeinfo->tm_year + 1900 << ' ';
-					std::cout.width(2);
-					std::cout << timeinfo->tm_hour << ':';
-					std::cout.width(2);
-					std::cout << timeinfo->tm_min << "             " << fileinfo.name;
-					std::cout << "\t\t" << fileinfo.size << " bytes" <<"\tAttr "<<fileinfo.attrib<< std::endl;*/
 				}
 			}
-		// Продолжаем Поиск
+
 		flag = _findnext(result, &fileinfo);
 		}
-	// Очищаем ресурсы, выделенные под поиск
+
 	_findclose(result);
 }
 
@@ -269,16 +248,6 @@ int FileManager::CommandResetRdoAttr(File file)
     else return 1;
 }
 
-//char* FileManager::ReadPpath() {								//	прочитать путь
-//	std::cin.get();
-//	std::cin.getline(FromPath, MAX_PATH);
-//	if (!(FromPath[1] == ':' && FromPath[2] == '\\')){
-//		strcpy(ToPath, FromPath);
-//		strcpy(FromPath, CurrentPath);
-//		strcat(FromPath, ToPath);
-//	}
-//	return FromPath;
-//}
 
 int FileManager::CommandCOPY(File file, const char* ToPath)
 {								
@@ -300,7 +269,7 @@ int FileManager::CommandCOPY(File file, const char* ToPath)
 
 }
 
-void FileManager::CopyFileFolders(const char* From, const char* To){			//	копирование файла (папки) из одной папки в другую
+void FileManager::CopyFileFolders(const char* From, const char* To){
 
 	_finddata_t fileinfo;
 
@@ -325,14 +294,14 @@ void FileManager::CopyFileFolders(const char* From, const char* To){			//	копиро
 	strcpy(pathfind, From);
 	strcat(pathfind, "\\*.*");
 
-	// Начало Поиска
+
 	int result = _findfirst(pathfind, &fileinfo);
 
 	int flag = result;
 	while (flag != -1){
 		if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 
-			// Проверяем Директория или Нет
+
 			if (fileinfo.attrib&_A_SUBDIR) {
 				strcat(FromPach, "\\");
 				CopyFileFolders(strcat(FromPach, fileinfo.name), ToPach);
@@ -347,14 +316,14 @@ void FileManager::CopyFileFolders(const char* From, const char* To){			//	копиро
 				ToPach[sizeTo] = '\0';
 			}
 		}
-		// Продолжаем Поиск
+
 		flag = _findnext(result, &fileinfo);
 	}
-	// Очищаем ресурсы, выделенные под поиск
+
 	_findclose(result);
 }
 
-bool FileManager::Copy_File(const char* FromCopy, const char* WhereToCopy){					//	копирование файла
+bool FileManager::Copy_File(const char* FromCopy, const char* WhereToCopy){
 	bool flag = false;
 	const int size = 4096;
 	char buffer[size] = {};
@@ -438,7 +407,7 @@ bool FileManager::FileCreation(const char* path)
 
 }
 
-int FileManager::CommandRENAME(File file, const char* newName) {						//	команда переименование файла или папки
+int FileManager::CommandRENAME(File file, const char* newName) {
 	if (file.IsRdonly()) return 1;
 	if (RenamFileOrFolder(file.GetPath(), newName))
 		return 0;
@@ -452,7 +421,7 @@ bool FileManager::RenamFileOrFolder(const char* path, const char* newName){
 	*(strrchr(ToPath, '\\') + 1) = '\0';
 	strcat(ToPath, newName);
 
-	// Произведем переименование и проверку результата
+
 	if (rename(path, ToPath))
 		flag = false;
 	else
@@ -471,7 +440,7 @@ int FileManager::CommandMKDIR(const char* name) {
 }
 
 bool FileManager::CreateDir(const char* path){
-	//Создаем директорию и проверяем результат
+
 	if (_mkdir(path) == -1)
 		return false;
 	else
@@ -489,7 +458,7 @@ int FileManager::CommandDEL(File file)
 	}
 	else 
 	{
-       // GetFileFolders();
+
 		DeleteNonEmptyDirectory(file.GetPath());
 		if (DeletFileOrFolder(file.GetPath()))
 			return 0;
@@ -511,15 +480,15 @@ void FileManager::DeleteNonEmptyDirectory(const char* path)
 	strcpy(pathfind, FromPach);
 	strcat(pathfind, "\\*.*");
 
-	// Начало Поиска
+
 	int result = _findfirst(pathfind, &fileinfo);
 
 	int flag = result;
 	while (flag != -1){
 		if (strcmp(fileinfo.name, ".") && strcmp(fileinfo.name, "..")){
 
-			// Проверяем Директория или Нет
-			if (fileinfo.attrib&_A_SUBDIR) {	//	папка
+
+            if (fileinfo.attrib&_A_SUBDIR) {
 				strcat(FromPach, "\\");
 				if (EmptyDirectory(strcat(FromPach, fileinfo.name))){
 					DeleteNonEmptyDirectory(FromPach);
@@ -537,10 +506,10 @@ void FileManager::DeleteNonEmptyDirectory(const char* path)
 				*(strrchr(FromPach, '\\') + 1) = '\0';
 			}
 		}
-		// Продолжаем Поиск
+
 		flag = _findnext(result, &fileinfo);
 	}
-	// Очищаем ресурсы, выделенные под поиск
+
 	_findclose(result);
 }
 
@@ -565,7 +534,7 @@ FileManager::FileManager()
 	GetDrives();
 }
 
-bool FileManager::ValidationFilePath(const char* path){			//	проверка пути к файлу
+bool FileManager::ValidationFilePath(const char* path){
 	bool flag = true;
 
 	std::ifstream in(path, std::ios::binary | std::ios::in);
@@ -575,7 +544,7 @@ bool FileManager::ValidationFilePath(const char* path){			//	проверка пути к фай
 	return flag;
 }
 
-bool FileManager::EmptyDirectory(const char* path) {				//	пустая директории
+bool FileManager::EmptyDirectory(const char* path) {
 	strcpy(pathfind, path);
 	strcat(pathfind, "\\*.*");
 
@@ -589,7 +558,7 @@ bool FileManager::EmptyDirectory(const char* path) {				//	пустая директории
 
 		flag = _findnext(result, &fileinfo);
 	}
-	// Очищаем ресурсы, выделенные под поиск
+
 	_findclose(result);
 
 	return IsEmpty;

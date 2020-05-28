@@ -95,7 +95,7 @@
          <widget class="QTableWidget" name="filetableWidget">
           <property name="font">
            <font>
-            <pointsize>9</pointsize>
+            <pointsize>10</pointsize>
            </font>
           </property>
           <property name="dragDropMode">
@@ -290,7 +290,7 @@
          <widget class="QTableWidget" name="filetableWidgetR">
           <property name="font">
            <font>
-            <pointsize>9</pointsize>
+            <pointsize>10</pointsize>
            </font>
           </property>
          </widget>

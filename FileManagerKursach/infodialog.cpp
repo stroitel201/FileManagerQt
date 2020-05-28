@@ -48,8 +48,10 @@ infoDialog::infoDialog(File* file,bool side,QWidget *parent):
         QPixmap p;
         if(file->GetExp()=="exe")
             p.load(":/icons/exefileicon.png");
-        if(file->GetExp()=="docx")
+        else if(file->GetExp()=="docx")
             p.load(":/icons/docxfileicon.png");
+        else if(file->GetExp()=="torrent")
+            p.load(":/icons/torrfileicon.png");
         else if(file->GetExp()=="dll")
             p.load(":/icons/dllfileicon.png");
         else if(file->GetExp()=="doc")
